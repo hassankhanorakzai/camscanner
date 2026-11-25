@@ -14,7 +14,7 @@ const { PortalLink } = require('../../src/main/portal');
 const { imaging, fixture, tmpDir } = require('./helpers');
 
 let hasPhp = true;
-try { execFileSync('php', ['-v']); } catch { hasPhp = false; }
+try { hasPhp = /pdo_sqlite/i.test(execFileSync('php', ['-m']).toString()); } catch { hasPhp = false; }
 
 const PORTAL = path.join(__dirname, '..', '..', 'portal');
 const SETUP_KEY = 'ABCD-1234-EF56-7890';
@@ -51,7 +51,7 @@ async function phoneUpload(api, buf) {
   return id;
 }
 
-test('portal relay: connect PC, pair phone, browse, scan from phone, fetch PDF, revoke', { skip: !hasPhp && 'php not installed' }, async () => {
+test('portal relay: connect PC, pair phone, browse, scan from phone, fetch PDF, revoke', { skip: !hasPhp && 'php with pdo_sqlite not available' }, async () => {
   const portal = await startPortal();
   const lib = new Library({ root: path.join(tmpDir(), 'lib'), userId: 1, libraryId: 'L1', username: 'ali' }, imaging).open();
   const link = new PortalLink(lib, { imaging });
