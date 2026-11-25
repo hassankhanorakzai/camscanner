@@ -26,8 +26,8 @@ async function shot(page, name) { await page.screenshot({ path: path.join(SHOTS,
 
 async function launch() {
   const app = await electron.launch({
-    executablePath: require('electron'),
-    args: [ROOT, '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', '--no-sandbox'],
+    executablePath: process.env.SMARTSCAN_E2E_EXE || require('electron'),
+    args: [...(process.env.SMARTSCAN_E2E_EXE ? [] : [ROOT]), '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', '--no-sandbox'],
     env: { ...process.env, SMARTSCAN_DATA_DIR: DATA, SMARTSCAN_DEFAULT_BASE: BASE },
   });
   const page = await app.firstWindow();

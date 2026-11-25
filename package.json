@@ -26,5 +26,69 @@
   "devDependencies": {
     "electron": "^45.5.0",
     "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "com.smartscan.desktop",
+    "productName": "SmartScan",
+    "copyright": "Copyright © SmartScan",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "build/icon.png",
+      "package.json",
+      "!**/*.map",
+      "!**/*.d.ts",
+      "!**/*.md",
+      "!node_modules/@techstark/opencv-js/dist/src/**",
+      "!node_modules/@techstark/opencv-js/src/**",
+      "!node_modules/pdf-lib/es/**",
+      "!node_modules/pdf-lib/src/**",
+      "!node_modules/pdf-lib/dist/**",
+      "!node_modules/**/{test,tests,__tests__,docs,example,examples}/**"
+    ],
+    "asar": true,
+    "compression": "maximum",
+    "electronLanguages": [
+      "en-US"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "executableName": "SmartScan",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "SmartScan",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "artifactName": "SmartScan-Setup-${version}.exe",
+      "include": "build/installer.nsh"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "hassankhanorakzai",
+        "repo": "camscanner",
+        "releaseType": "release"
+      }
+    ]
   }
 }

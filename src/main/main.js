@@ -75,7 +75,10 @@ function createWindow() {
     webPreferences: { preload: path.join(__dirname, '..', 'preload', 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: false },
   });
   if (session.config.get('maximized')) mainWindow.maximize();
-  mainWindow.once('ready-to-show', () => { if (!process.argv.includes('--hidden')) mainWindow.show(); });
+  mainWindow.once('ready-to-show', () => {
+    if (process.argv.includes('--hidden')) { mainWindow.showInactive(); mainWindow.minimize(); } // started with Windows: stay in the taskbar
+    else mainWindow.show();
+  });
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https:\/\//.test(url)) shell.openExternal(url);
     return { action: 'deny' };
