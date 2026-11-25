@@ -294,6 +294,21 @@ function register({ session, getWindow, imaging, updater }) {
   handle('phone:start', () => phone.start(), { lib: false });
   handle('phone:stop', () => phone.stop(), { lib: false });
 
+  // ---------- phone & web portal ----------
+  const portal = () => { if (!session.portal) throw new S.AppError('Your library is not available.'); return session.portal; };
+  handle('portal:status', () => portal().publicState());
+  handle('portal:connect', (_l, data) => portal().connect(data));
+  handle('portal:disconnect', () => portal().disconnect());
+  handle('portal:pairing', async () => {
+    const r = await portal().pairing();
+    const QRCode = require('qrcode');
+    return { ...r, qr: await QRCode.toDataURL(r.link, { margin: 1, width: 300, errorCorrectionLevel: 'M' }) };
+  });
+  handle('portal:revoke', (_l, id) => portal().revoke(id));
+  handle('portal:resetKey', () => portal().resetKey());
+  handle('portal:rename', (_l, label) => portal().rename(label));
+  handle('portal:syncNow', () => portal().syncNow());
+
   // ---------- app ----------
   handle('app:info', () => ({ version: app.getVersion(), platform: process.platform, electron: process.versions.electron, packaged: app.isPackaged, dataDir: app.getPath('userData') }), { auth: false });
   handle('app:checkUpdates', () => updater.check(), { auth: false });

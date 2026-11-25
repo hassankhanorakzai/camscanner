@@ -26,6 +26,21 @@ jobs:
         if: always()
         with: { name: e2e-screenshots, path: test/.tmp/shots, if-no-files-found: ignore }
 
+  web-portal:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: PHP syntax check
+        run: for f in portal/*.php portal/inc/*.php; do php -l "$f"; done
+      - name: Build upload package for shared hosting
+        run: npm run build:portal
+      - uses: actions/upload-artifact@v4
+        with: { name: SmartScan-web-portal, path: dist-portal/smartscan-portal.zip }
+
   windows-installer:
     needs: test
     runs-on: windows-latest

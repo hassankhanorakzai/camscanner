@@ -10,6 +10,7 @@ const crypto = require('node:crypto');
 const { Accounts } = require('./accounts');
 const { Library, MARKER } = require('./library');
 const { SyncEngine } = require('./sync');
+const { PortalLink } = require('./portal');
 const S = require('./storage');
 
 class Session {
@@ -77,6 +78,8 @@ class Session {
       lib.listeners.add((evt) => this.notify('library:changed', { evt }));
       this.sync = new SyncEngine(lib, (state) => this.notify('sync:state', state));
       this.sync.start();
+      this.portal = new PortalLink(lib, { seal: (x) => this.seal(x), unseal: (x) => this.unseal(x), imaging: this.imaging, onState: (st) => this.notify('portal:state', st) });
+      this.portal.start();
       try { if (lib.getSettings().autoBackup) lib.autoBackup(); } catch (e) { lib.log('error', `Automatic backup failed: ${e.message}`); }
     } catch (e) {
       this.lib = null;
@@ -86,7 +89,19 @@ class Session {
     return this.status();
   }
 
+  /** Encrypt secrets with the OS (DPAPI on Windows) before storing them in the library DB. */
+  seal(str) {
+    const safe = this.config.safe;
+    if (safe?.isEncryptionAvailable()) return `enc:${safe.encryptString(str).toString('base64')}`;
+    return `raw:${str}`;
+  }
+  unseal(str) {
+    if (str.startsWith('enc:')) return this.config.safe.decryptString(Buffer.from(str.slice(4), 'base64'));
+    return str.startsWith('raw:') ? str.slice(4) : str;
+  }
+
   async endLibrary() {
+    if (this.portal) { this.portal.stop(); this.portal = null; }
     if (this.sync) { this.sync.stop(); this.sync = null; }
     if (this.lib) {
       await this.lib.lock.run(async () => {}); // wait for pending writes
@@ -118,7 +133,7 @@ class Session {
   /** Close + reopen helpers for restore operations. */
   hooks() {
     return {
-      closeLibrary: async () => { if (this.sync) { this.sync.stop(); this.sync = null; } if (this.lib) { this.lib.close(); this.lib = null; } },
+      closeLibrary: async () => { if (this.portal) { this.portal.stop(); this.portal = null; } if (this.sync) { this.sync.stop(); this.sync = null; } if (this.lib) { this.lib.close(); this.lib = null; } },
       reopenLibrary: async () => { this.openLibrary(); if (!this.lib) throw new S.AppError(this.libError || 'Could not reopen library'); return this.lib; },
     };
   }

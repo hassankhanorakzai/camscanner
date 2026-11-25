@@ -13,7 +13,8 @@
     "test:e2e": "node test/e2e/run.js",
     "icons": "node scripts/make-icons.js",
     "dist:win": "electron-builder --win nsis --x64",
-    "dist:dir": "electron-builder --dir"
+    "dist:dir": "electron-builder --dir",
+    "build:portal": "node scripts/build-portal.js"
   },
   "dependencies": {
     "@techstark/opencv-js": "4.12.0-release.1",

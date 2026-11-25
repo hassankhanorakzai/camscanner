@@ -13,6 +13,7 @@ const routes = {
   trash: () => import('./views/trash.js'),
   storage: () => import('./views/storage.js'),
   settings: () => import('./views/settings.js'),
+  portal: () => import('./views/portal.js'),
 };
 
 const NAV = [
@@ -24,6 +25,7 @@ const NAV = [
   ['favorites', 'Favorites', 'star'],
   ['trash', 'Trash', 'trash'],
   '-',
+  ['portal', 'Phone & Web', 'phone'],
   ['storage', 'Local Storage', 'drive'],
   ['settings', 'Settings', 'settings'],
 ];

@@ -5,7 +5,7 @@ const pending = new Map();
 
 function getWorker() {
   if (worker) return worker;
-  worker = new Worker('/worker/cv-worker.js');
+  worker = new Worker(new URL('../../worker/cv-worker.js', import.meta.url));
   worker.onmessage = (e) => {
     const p = pending.get(e.data.id);
     if (!p) return;

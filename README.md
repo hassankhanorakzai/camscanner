@@ -7,7 +7,8 @@ An offline-first Windows desktop app for scanning documents (CNIC, passports, ce
 - Files are stored as `Documents\<Person>\<Document>\<Document>_Page_01.jpg` plus `<Document>.pdf`, so you can open them straight from Windows Explorer.
 - Changes made in Explorer (files added, renamed or deleted) sync back into the app.
 - Multiple users on one PC. Each user has a separate, password-protected library.
-- Nothing is uploaded anywhere. The only network access is the optional "Check for updates" button.
+- **Phone & Web (optional):** use your phones *from anywhere* through a small PHP portal on your own shared hosting (cPanel/hPanel). Phones can scan into the PC, browse documents, download or share PDFs and keep offline copies. All of it is end-to-end encrypted, so the hosting can't read your documents. See **[PORTAL.md](PORTAL.md)**.
+- Without the portal, nothing is uploaded anywhere. The only other network access is the optional "Check for updates" button.
 
 ---
 
@@ -19,6 +20,8 @@ npm start                 # run the app in development
 npm test                  # unit tests (library, sync, backup, accounts, phone bridge)
 npm run test:e2e          # end-to-end: drives the real Electron app (on Linux, wrap with xvfb-run)
 npm run dist:win          # Windows NSIS installer -> dist/SmartScan-Setup-<version>.exe
+npm run build:portal      # web portal for your hosting -> dist-portal/smartscan-portal.zip
+node test/e2e/portal-e2e.js   # MariaDB + install.php + PHP portal + desktop app + emulated phone
 ```
 
 The Windows installer must be built **on Windows**, or by the included GitHub Actions workflow (`.github/workflows/build.yml`). The workflow runs all tests, builds the installer on `windows-latest`, uploads it as a build artifact, and publishes a GitHub Release when you push a `v*` tag. That release is also the source for in-app updates.

@@ -4,3 +4,6 @@ out/
 *.log
 test/.tmp/
 .DS_Store
+dist-portal/
+portal/config.php
+portal/data/**/*.bin

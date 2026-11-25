@@ -6,7 +6,7 @@
  * The output keeps the document's real proportions — nothing is padded or
  * stretched to a paper size.
  */
-importScripts('/vendor/opencv.js');
+importScripts('../vendor/opencv.js'); // resolved relative to this worker (desktop app and phone app)
 
 const ready = (async () => {
   let c = self.cv;

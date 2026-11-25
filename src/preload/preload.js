@@ -2,8 +2,8 @@
 /* Minimal, allow-listed bridge between the UI and the main process. */
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
-const PREFIXES = ['auth:', 'dialog:', 'storage:', 'sync:', 'settings:', 'collections:', 'documents:', 'pages:', 'trash:', 'stats:', 'duplicates:', 'files:', 'pdf:', 'print:', 'backup:', 'scanner:', 'phone:', 'app:'];
-const EVENTS = ['sync:state', 'library:changed', 'progress', 'phone:image', 'update:status'];
+const PREFIXES = ['auth:', 'dialog:', 'storage:', 'sync:', 'settings:', 'collections:', 'documents:', 'pages:', 'trash:', 'stats:', 'duplicates:', 'files:', 'pdf:', 'print:', 'backup:', 'scanner:', 'phone:', 'app:', 'portal:'];
+const EVENTS = ['sync:state', 'library:changed', 'progress', 'phone:image', 'update:status', 'portal:state'];
 
 contextBridge.exposeInMainWorld('smartscan', {
   async call(channel, ...args) {
